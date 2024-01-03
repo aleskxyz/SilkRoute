@@ -14,6 +14,7 @@ import { useDeleteAll } from "./hooks/useDeleteAll"
 import { patchDeployment } from "@/lib/backend"
 
 import { configGenerator } from "@/lib/configGenerator"
+import QRCode from "./QRCode"
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { }
 
@@ -24,6 +25,7 @@ export const AuthForm = ({ className, ...props }: UserAuthFormProps) => {
     const { isNSLoading } = useNamespaces()
     const { isPodsLoading, pods } = usePods()
     const localToken = localStorage.getItem("token") || ""
+    const [uuid] = React.useState(localStorage.getItem("uuid") || "")
     async function onSubmit(event: React.SyntheticEvent) {
         event.preventDefault()
         const { username } = event.target as typeof event.target & {
@@ -95,6 +97,9 @@ export const AuthForm = ({ className, ...props }: UserAuthFormProps) => {
             <PauseUnPause />
 
             <ShowConfig />
+            {uuid && <div className="flex justify-center">
+                <QRCode value={configGenerator(uuid).template} />
+            </div>}
             <IsOnline />
 
             <form onSubmit={onSubmit}>
